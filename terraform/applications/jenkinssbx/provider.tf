@@ -24,7 +24,9 @@ terraform {
     encrypt = true
     skip_credentials_validation = true
     skip_region_validation = true
-    s3 = "http://192.168.12.22:9000"
+    endpoints {
+        s3       = "http://192.168.12.22:9000"
+    }
     access_key = "jenkins-sbx-key"
     secret_key = "jenkins-sbx-secret-key"
   }
