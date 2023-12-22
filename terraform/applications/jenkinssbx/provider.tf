@@ -30,6 +30,7 @@ terraform {
     skip_region_validation = true
     access_key = "jenkins-sbx-key"
     secret_key = "jenkins-sbx-secret-key"
+    key = "terraform.tfstate"
   }
 }
 
