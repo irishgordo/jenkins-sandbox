@@ -25,7 +25,6 @@ terraform {
   backend "s3" {
     bucket = "jenkins-sbx"
     region = "us-sbx-1"
-    endpoint = "http://192.168.12.22:9000"
     encrypt = false
     skip_credentials_validation = true  # Skip AWS related checks and validations
     skip_metadata_api_check = true
@@ -70,6 +69,7 @@ provider "kubernetes" {
 }
 
 provider "aws" {
+    skip_requesting_account_id = true
     endpoints {
         s3       = "http://192.168.12.22:9000"
     }
