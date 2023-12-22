@@ -19,4 +19,4 @@ jobs:
         run: chmod +x ci-cd-scripts/show-env.sh
       - name: Run the scripts
         run: |
-          ./ ci-cd-scripts/show-env.sh
+          ./ci-cd-scripts/show-env.sh
