@@ -1,0 +1,8 @@
+- name: say hello
+  ansible.builtin.shell: echo "hello world"
+  register: say_hello_result
+
+- name: debug say hello
+  ansible.builtin.debug:
+    msg: "{{ say_hello_result.stdout }}"
+  ignore_errors: true

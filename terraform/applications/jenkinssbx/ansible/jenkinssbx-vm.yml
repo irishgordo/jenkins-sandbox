@@ -1,0 +1,6 @@
+- hosts: jenkinssbxvm-box
+  become: yes
+  gather_facts: yes
+  become_method: sudo
+  roles:
+    - docker-jenkins

@@ -1,0 +1,68 @@
+jenkins:
+  systemMessage: "Jenkins configured automatically"
+  globalNodeProperties:
+    - envVars:
+        env:
+          - key: JENKINS_ADMIN_PASSWORD
+            value: ${JENKINS_ADMIN_PASSWORD}
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: admin
+          password: ${JENKINS_ADMIN_PASSWORD}
+        - id: dev
+          password: ${JENKINS_DEV_PASSWORD}
+  authorizationStrategy:
+    globalMatrix:
+      permissions:
+        - "Job/Build:dev"
+        - "Job/Cancel:dev"
+        - "Job/Read:dev"
+        - "Job/Workspace:dev"
+        - "Overall/Administer:admin"
+        - "Overall/Read:authenticated"
+        - "Run/Replay:dev"
+        - "Run/Update:dev"
+  remotingSecurity:
+    enabled: true
+  nodes:
+  - permanent:
+      labelString: "sandbox"
+      launcher:
+        jnlp:
+          webSocket: true
+          workDirSettings:
+            disabled: false
+            failIfWorkDirIsMissing: false
+            internalDir: "remoting"
+      mode: EXCLUSIVE
+      name: "sandbox"
+      nodeDescription: "for sandbox testing only"
+      remoteFS: "/home/jenkins"
+      retentionStrategy: "always"
+  numExecutors: 4
+
+security:
+  queueItemAuthenticator:
+    authenticators:
+    - global:
+        strategy: "triggeringUsersAuthorizationStrategy"
+
+jobs:
+  - file: /jenkins_config/test_job.groovy
+
+unclassified:
+  location:
+    url: ${JENKINS_PUBLIC_ENDPOINT}
+    adminAddress: ${JENKINS_ADMIN_EMAIL}
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - usernamePassword:
+              scope: GLOBAL
+              id: silly-credentials
+              username: silly
+              password: sillypw
