@@ -33,5 +33,7 @@ jobs:
     steps:
       - name: terraform init
         run: TF_LOG=TRACE terraform init -var-file="env/local.tfvars"
+      - name: copy current github private runners kubeconfig for harvester cluster to this directory since we are going to use that to build are resources plus ansible
+        run: cp -v /home/ubuntu/sandbox-harvester-cluster-kubeconfig.yaml local.yaml
       - name: terraform plan
         run: TF_LOG=TRACE terraform plan -var-file="env/local.tfvars"
