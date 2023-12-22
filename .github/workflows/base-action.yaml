@@ -9,10 +9,13 @@ on:
       - sandbox
 jobs:
   checkout-start:
+    environment: sandbox
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
   list-stats:
+    environment: sandbox
+    needs: checkout-start
     runs-on: self-hosted
     steps:
       - name: Make the script files executable
@@ -20,3 +23,13 @@ jobs:
       - name: Run the scripts
         run: |
           ./ci-cd-scripts/show-env.sh
+  terraform:
+    environment: sandbox
+    defaults:
+      run:
+        working-directory: ./terraform/applications/jenkinssbx
+    needs: [checkout-start, list-stats]
+    runs-on: self-hosted
+    steps:
+      - name: terraform init
+        run: TF_LOG=TRACE terraform init -var-file="env/local.tfvars"
