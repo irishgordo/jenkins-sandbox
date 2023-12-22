@@ -6,7 +6,7 @@ terraform {
       version = "0.6.3"
     }
     kubernetes = {
-      source = "hashicorp/kubernetes"
+      source  = "hashicorp/kubernetes"
       version = "2.16.0"
     }
     # unifi = {
@@ -17,6 +17,16 @@ terraform {
       version = "1.1.0"
       source  = "ansible/ansible"
     }
+  }
+  backend "s3" {
+    bucket = "jenkins-sbx"
+    region = "us-sbx-1"
+    encrypt = true
+    skip_credentials_validation = true
+    skip_region_validation = true
+    s3 = "http://192.168.12.22:9000"
+    access_key = "jenkins-sbx-key"
+    secret_key = "jenkins-sbx-secret-key"
   }
 }
 
@@ -35,12 +45,12 @@ terraform {
 # }
 
 locals {
-  module_path        = abspath(path.module)
+  module_path                = abspath(path.module)
   terraform_script_root_path = abspath("${path.module}/../..")
-  codebase_root_path = abspath("${path.module}/../../..")
+  codebase_root_path         = abspath("${path.module}/../../..")
 
   # Trim local.codebase_root_path and one additional slash from local.module_path
-  module_rel_path    = substr(local.module_path, length(local.terraform_script_root_path)+1, length(local.module_path))
+  module_rel_path = substr(local.module_path, length(local.terraform_script_root_path) + 1, length(local.module_path))
 }
 
 provider "harvester" {
