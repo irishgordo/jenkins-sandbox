@@ -12,3 +12,11 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
+  list-stats:
+    runs-on: self-hosted
+    steps:
+      - name: Make the script files executable
+        run: chmod +x ci-cd-scripts/show-env.sh
+      - name: Run the scripts
+        run: |
+          ./show-env.sh
