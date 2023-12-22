@@ -29,7 +29,7 @@ terraform {
     skip_credentials_validation = true  # Skip AWS related checks and validations
     skip_metadata_api_check = true
     skip_region_validation = true
-    force_path_style = true
+    use_path_style = true
     access_key = "jenkins-sbx-key"
     secret_key = "jenkins-sbx-secret-key"
     key = "terraform.tfstate"
@@ -70,6 +70,8 @@ provider "kubernetes" {
 
 provider "aws" {
     skip_requesting_account_id = true
+    skip_credentials_validation = true
+    skip_metadata_api_check     = true
     endpoints {
         s3       = "http://192.168.12.22:9000"
     }
