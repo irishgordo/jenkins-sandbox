@@ -1,5 +1,5 @@
 - name: say hello
-  ansible.builtin.shell: echo "hello world"
+  ansible.builtin.shell: echo "starting provisioning OR updating of docker jenkins..."
   register: say_hello_result
 
 - name: debug say hello
