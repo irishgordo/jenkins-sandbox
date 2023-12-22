@@ -37,3 +37,5 @@ jobs:
         run: TF_LOG=TRACE terraform init -var-file="env/local.tfvars"
       - name: terraform plan
         run: TF_LOG=TRACE terraform plan -var-file="env/local.tfvars"
+      - name: terraform apply with auto aproval
+        run: TF_LOG=TRACE terraform apply -var-file="env/local.tfvars" -auto-approve
