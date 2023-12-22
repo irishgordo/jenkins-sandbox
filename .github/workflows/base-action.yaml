@@ -32,4 +32,4 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: terraform init
-        run: TF_LOG=TRACE terraform init -var-file="env/local.tfvars"
+        run: TF_LOG=TRACE terraform init -reconfigure -var-file="env/local.tfvars"
