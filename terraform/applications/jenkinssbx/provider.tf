@@ -25,9 +25,12 @@ terraform {
   backend "s3" {
     bucket = "jenkins-sbx"
     region = "us-sbx-1"
-    encrypt = true
-    skip_credentials_validation = true
+    endpoint = "http://192.168.12.22:9000"
+    encrypt = false
+    skip_credentials_validation = true  # Skip AWS related checks and validations
+    skip_metadata_api_check = true
     skip_region_validation = true
+    force_path_style = true
     access_key = "jenkins-sbx-key"
     secret_key = "jenkins-sbx-secret-key"
     key = "terraform.tfstate"
