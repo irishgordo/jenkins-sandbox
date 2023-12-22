@@ -17,15 +17,16 @@ terraform {
       version = "1.1.0"
       source  = "ansible/ansible"
     }
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
+    # aws = {
+    #   source  = "hashicorp/aws"
+    #   version = "~> 5.0"
+    # }
   }
   backend "s3" {
     bucket = "jenkins-sbx"
     region = "us-sbx-1"
     encrypt = false
+    endpoint = "http://192.168.12.22:9000"
     skip_credentials_validation = true  # Skip AWS related checks and validations
     skip_metadata_api_check = true
     skip_region_validation = true
@@ -68,11 +69,11 @@ provider "kubernetes" {
   config_path = abspath("${local.codebase_root_path}/local.yaml")
 }
 
-provider "aws" {
-    skip_requesting_account_id = true
-    skip_credentials_validation = true
-    skip_metadata_api_check     = true
-    endpoints {
-        s3       = "http://192.168.12.22:9000"
-    }
-}
+# provider "aws" {
+#     skip_requesting_account_id = true
+#     skip_credentials_validation = true
+#     skip_metadata_api_check     = true
+#     endpoints {
+#         s3       = "http://192.168.12.22:9000"
+#     }
+# }
