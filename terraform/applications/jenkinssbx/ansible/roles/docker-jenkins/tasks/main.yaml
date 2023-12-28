@@ -106,7 +106,7 @@
 
 - name: create volume for jenkins_home
   ansible.builtin.shell: |
-    docker volume create jenkins_home
+    /usr/bin/docker volume create jenkins_home
   register: create_volume_result
 
 - name: debug create_volume_result
@@ -128,7 +128,7 @@
 
 - name: ansbile-builtin docker-compose down
   ansible.builtin.shell: |
-    cd /home/ubuntu && docker-compose down -d
+    cd /home/ubuntu && /usr/bin/docker compose down -d
   register: docker_compose_up_result
   ignore_errors: true
 
@@ -178,7 +178,7 @@
 
 - name: ansible-builtin docker-compose up
   ansible.builtin.shell: |
-    cd /home/ubuntu && docker-compose up -d
+    cd /home/ubuntu && /usr/bin/docker compose up -d
   register: docker_compose_up_result
 
 - name: debug docker_compose_up_result
