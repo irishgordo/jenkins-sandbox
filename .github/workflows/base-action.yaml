@@ -20,9 +20,11 @@ jobs:
     steps:
       - name: Make the script files executable
         run: chmod +x ci-cd-scripts/show-env.sh
-      - name: Run the scripts
+      - name: Run show env
         run: |
           ./ci-cd-scripts/show-env.sh
+      - name: Run dump known hosts
+        run: |
           ./ci-cd-scripts/dump-known-hosts.sh
       - name: copy current github private runners kubeconfig for harvester cluster to this directory since we are going to use that to build are resources plus ansible
         run: cp -v /home/ubuntu/sandbox-harvester-cluster-kubeconfig.yaml local.yaml
