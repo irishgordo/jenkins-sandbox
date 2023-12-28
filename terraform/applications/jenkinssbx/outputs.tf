@@ -30,3 +30,7 @@ output "information_next_steps" {
   EOF
 
 }
+
+output "ansible_playbook_jenkinssbxvm-vm" {
+  value = "${ansible_playbook.jenkinssbxvm-vm-ansible-playbook}"
+}
