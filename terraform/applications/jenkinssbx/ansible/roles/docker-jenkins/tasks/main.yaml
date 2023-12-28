@@ -102,7 +102,7 @@
     name: jenkins_home
     debug: true
     docker_host: "tcp://{{ ip }}:2376"
-    use_ssh_client: true
+    #use_ssh_client: true
 
 - name: stopped Jenkins
   community.docker.docker_container:
@@ -112,7 +112,7 @@
     debug: true
     restart: true
     docker_host: "tcp://{{ ip }}:2376"
-    use_ssh_client: true
+    #use_ssh_client: true
     image: jenkins/jenkins-ansible:latest
     detach: true
     volumes:
@@ -155,7 +155,7 @@
     state: started
     restart: true
     docker_host: "tcp://{{ ip }}:2376"
-    use_ssh_client: true
+    #use_ssh_client: true
     image: jenkins/jenkins-ansible:latest
     detach: true
     volumes:
