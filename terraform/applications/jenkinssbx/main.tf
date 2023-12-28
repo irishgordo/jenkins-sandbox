@@ -78,7 +78,7 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
 
 }
 
-resource "ansible_playbook" "integration-vm-server" {
+resource "ansible_playbook" "jenkinssbxvm-vm-ansible-playbook" {
   depends_on = [
     harvester_virtualmachine.jenkinssbxvm-vm
   ]
