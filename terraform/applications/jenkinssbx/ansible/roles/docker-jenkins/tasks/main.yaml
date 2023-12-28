@@ -31,6 +31,17 @@
     msg: "{{ copy_build_docker_image_result.stdout }}"
   ignore_errors: true
 
+- name: make /home/ubuntu/build_docker_image.sh executable
+  ansible.builtin.file:
+    path: /home/ubuntu/build_docker_image.sh
+    mode: 'u+x'
+  register: make_build_docker_image_executable_result
+
+- name: debug the make_build_docker_image_executable_result
+  ansible.builtin.debug:
+    msg: "{{ make_build_docker_image_executable_result.stdout }}"
+  ignore_errors: true
+
 - name: copy over all *.groovy files to /home/ubuntu
   ansible.builtin.copy:
     src: "*.groovy"
@@ -114,7 +125,7 @@
       QE_ANSIBLE_BRANCH: "{{ ansible_branch }}"
   ignore_errors: true
 
-- name: run ./build_docker_image.sh
+- name: run build_docker_image.sh
   ansible.builtin.shell: /home/ubuntu/build_docker_image.sh
   register: build_docker_image_result
   chdir: /home/ubuntu
