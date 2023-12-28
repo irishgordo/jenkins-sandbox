@@ -30,7 +30,7 @@ jobs:
         run: cp -v /home/ubuntu/sandbox-harvester-cluster-kubeconfig.yaml local.yaml
   terraform:
     env:
-      TF_VAR_runnertempknownhosts: ${{ runner.temp }}/temp_known_hosts
+      TF_VAR_runnertempknownhosts: "${{ runner.temp }}/temp_known_hosts"
     environment: sandbox
     defaults:
       run:
