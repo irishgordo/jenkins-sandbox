@@ -23,7 +23,7 @@ jobs:
       - name: Run show env
         run: |
           ./ci-cd-scripts/show-env.sh
-      - name: Run dump known hosts
+      - name: Build the known_hosts file the temp one
         run: |
           echo "" > ${{ runner.temp }}/temp_known_hosts
       - name: copy current github private runners kubeconfig for harvester cluster to this directory since we are going to use that to build are resources plus ansible
