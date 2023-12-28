@@ -101,7 +101,7 @@
   community.docker.docker_volume:
     name: jenkins_home
     debug: true
-    docker_host: "unix:///run/user/1000/docker.sock"
+    #docker_host: "unix:///run/user/1000/docker.sock"
     #docker_host: "tcp://{{ ip }}:2376"
     #use_ssh_client: true
 
@@ -142,7 +142,7 @@
     state: stopped
     debug: true
     restart: true
-    docker_host: "unix:///run/user/1000/docker.sock"
+    #docker_host: "unix:///run/user/1000/docker.sock"
     #docker_host: "tcp://{{ ip }}:2376"
     #use_ssh_client: true
     image: jenkins/jenkins-ansible:latest
@@ -195,7 +195,7 @@
     name: jenkins-ansible
     state: started
     restart: true
-    docker_host: "unix:///run/user/1000/docker.sock"
+    #docker_host: "unix:///run/user/1000/docker.sock"
     #docker_host: "tcp://{{ ip }}:2376"
     #use_ssh_client: true
     image: jenkins/jenkins-ansible:latest
