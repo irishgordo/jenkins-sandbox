@@ -97,44 +97,74 @@
 # https://peterbabic.dev/blog/tips-for-rootless-docker-on-arch-with-ansible/
 # docker rootless puts the sock in user space like, unix:///run/user/1000/docker.sock
 
-- name: Create volume for 'jenkins_home'
-  community.docker.docker_volume:
-    name: jenkins_home
-    debug: true
-    docker_host: "tcp://{{ ip }}:2376"
-    #use_ssh_client: true
+# - name: Create volume for 'jenkins_home'
+#   community.docker.docker_volume:
+#     name: jenkins_home
+#     debug: true
+#     docker_host: "tcp://{{ ip }}:2376"
+#     #use_ssh_client: true
 
-- name: stopped Jenkins
-  community.docker.docker_container:
-    container_default_behavior: compatibility
-    name: jenkins-ansible
-    state: stopped
-    debug: true
-    restart: true
-    docker_host: "tcp://{{ ip }}:2376"
-    #use_ssh_client: true
-    image: jenkins/jenkins-ansible:latest
-    detach: true
-    volumes:
-      - jenkins_home:/var/jenkins_home
-    ports:
-      - "80:8080"
-      - "50000:50000"
-    env:
-      SSHPASS: linux
-      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false -Djenkins.install.SetupWizard.adminInitialApiToken=\"{{ lookup('password', '/dev/null length=20 chars=ascii_letters') }}\" -Dhudson.model.DirectoryBrowserSupport.CSP=\"\""
-      JENKINS_ADMIN_PASSWORD: "{{ jenkins_admin_password }}"
-      JENKINS_DEV_PASSWORD: "{{ jenkins_dev_password }}"
-      JENKINS_PUBLIC_ENDPOINT: "{{ jenkins_public_endpoint }}"
-      JENKINS_ADMIN_EMAIL: "{{ jenkins_admin_email }}"
-      GITHUB_USERNAME: "{{ github_username }}"
-      GITHUB_ACCESS_TOKEN: "{{ github_token }}"
-      MINIO_ENDPOINT: "{{ minio_endpoint }}"
-      MINIO_ACCESS_KEY: "{{ minio_access_key }}"
-      MINIO_SECRET_KEY: "{{ minio_secret_key }}"
-      QE_ANSIBLE_URL: "{{ ansible_url }}"
-      QE_ANSIBLE_BRANCH: "{{ ansible_branch }}"
+- name: create volume for jenkins_home
+  ansible.builtin.shell: |
+    docker volume create jenkins_home
+  register: create_volume_result
+
+- name: debug create_volume_result
+  ansible.builtin.debug:
+    msg: "{{ create_volume_result.stdout }}"
   ignore_errors: true
+
+- name: template docker-compose.yaml to /home/ubuntu
+  ansible.builtin.template:
+    src: docker-compose.yaml.j2
+    dest: /home/ubuntu/docker-compose.yaml
+    force: yes
+  register: template_docker_compose_result
+
+- name: debug the template_docker_compose_result
+  ansible.builtin.debug:
+    msg: "{{ template_docker_compose_result.stdout }}"
+  ignore_errors: true
+
+- name: ansbile-builtin docker-compose down
+  ansible.builtin.shell: |
+    cd /home/ubuntu && docker-compose down -d
+  register: docker_compose_up_result
+  ignore_errors: true
+
+
+
+# - name: stopped Jenkins
+#   community.docker.docker_container:
+#     container_default_behavior: compatibility
+#     name: jenkins-ansible
+#     state: stopped
+#     debug: true
+#     restart: true
+#     docker_host: "tcp://{{ ip }}:2376"
+#     #use_ssh_client: true
+#     image: jenkins/jenkins-ansible:latest
+#     detach: true
+#     volumes:
+#       - jenkins_home:/var/jenkins_home
+#     ports:
+#       - "80:8080"
+#       - "50000:50000"
+#     env:
+#       SSHPASS: linux
+#       JAVA_OPTS: "-Djenkins.install.runSetupWizard=false -Djenkins.install.SetupWizard.adminInitialApiToken=\"{{ lookup('password', '/dev/null length=20 chars=ascii_letters') }}\" -Dhudson.model.DirectoryBrowserSupport.CSP=\"\""
+#       JENKINS_ADMIN_PASSWORD: "{{ jenkins_admin_password }}"
+#       JENKINS_DEV_PASSWORD: "{{ jenkins_dev_password }}"
+#       JENKINS_PUBLIC_ENDPOINT: "{{ jenkins_public_endpoint }}"
+#       JENKINS_ADMIN_EMAIL: "{{ jenkins_admin_email }}"
+#       GITHUB_USERNAME: "{{ github_username }}"
+#       GITHUB_ACCESS_TOKEN: "{{ github_token }}"
+#       MINIO_ENDPOINT: "{{ minio_endpoint }}"
+#       MINIO_ACCESS_KEY: "{{ minio_access_key }}"
+#       MINIO_SECRET_KEY: "{{ minio_secret_key }}"
+#       QE_ANSIBLE_URL: "{{ ansible_url }}"
+#       QE_ANSIBLE_BRANCH: "{{ ansible_branch }}"
+#   ignore_errors: true
 
 - name: run build_docker_image.sh
   ansible.builtin.shell: |
@@ -146,34 +176,43 @@
     msg: "{{ build_docker_image_result.stdout }}"
   ignore_errors: true
 
+- name: ansible-builtin docker-compose up
+  ansible.builtin.shell: |
+    cd /home/ubuntu && docker-compose up -d
+  register: docker_compose_up_result
 
-- name: started Jenkins
-  community.docker.docker_container:
-    container_default_behavior: compatibility
-    debug: true
-    name: jenkins-ansible
-    state: started
-    restart: true
-    docker_host: "tcp://{{ ip }}:2376"
-    #use_ssh_client: true
-    image: jenkins/jenkins-ansible:latest
-    detach: true
-    volumes:
-      - jenkins_home:/var/jenkins_home
-    ports:
-      - "80:8080"
-      - "50000:50000"
-    env:
-      SSHPASS: linux
-      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false -Djenkins.install.SetupWizard.adminInitialApiToken=\"{{ lookup('password', '/dev/null length=20 chars=ascii_letters') }}\" -Dhudson.model.DirectoryBrowserSupport.CSP=\"\""
-      JENKINS_ADMIN_PASSWORD: "{{ jenkins_admin_password }}"
-      JENKINS_DEV_PASSWORD: "{{ jenkins_dev_password }}"
-      JENKINS_PUBLIC_ENDPOINT: "{{ jenkins_public_endpoint }}"
-      JENKINS_ADMIN_EMAIL: "{{ jenkins_admin_email }}"
-      GITHUB_USERNAME: "{{ github_username }}"
-      GITHUB_ACCESS_TOKEN: "{{ github_token }}"
-      MINIO_ENDPOINT: "{{ minio_endpoint }}"
-      MINIO_ACCESS_KEY: "{{ minio_access_key }}"
-      MINIO_SECRET_KEY: "{{ minio_secret_key }}"
-      QE_ANSIBLE_URL: "{{ ansible_url }}"
-      QE_ANSIBLE_BRANCH: "{{ ansible_branch }}"
+- name: debug docker_compose_up_result
+  ansible.builtin.debug:
+    msg: "{{ docker_compose_up_result.stdout }}"
+  ignore_errors: true
+
+# - name: started Jenkins
+#   community.docker.docker_container:
+#     container_default_behavior: compatibility
+#     debug: true
+#     name: jenkins-ansible
+#     state: started
+#     restart: true
+#     docker_host: "tcp://{{ ip }}:2376"
+#     #use_ssh_client: true
+#     image: jenkins/jenkins-ansible:latest
+#     detach: true
+#     volumes:
+#       - jenkins_home:/var/jenkins_home
+#     ports:
+#       - "80:8080"
+#       - "50000:50000"
+#     env:
+#       SSHPASS: linux
+#       JAVA_OPTS: "-Djenkins.install.runSetupWizard=false -Djenkins.install.SetupWizard.adminInitialApiToken=\"{{ lookup('password', '/dev/null length=20 chars=ascii_letters') }}\" -Dhudson.model.DirectoryBrowserSupport.CSP=\"\""
+#       JENKINS_ADMIN_PASSWORD: "{{ jenkins_admin_password }}"
+#       JENKINS_DEV_PASSWORD: "{{ jenkins_dev_password }}"
+#       JENKINS_PUBLIC_ENDPOINT: "{{ jenkins_public_endpoint }}"
+#       JENKINS_ADMIN_EMAIL: "{{ jenkins_admin_email }}"
+#       GITHUB_USERNAME: "{{ github_username }}"
+#       GITHUB_ACCESS_TOKEN: "{{ github_token }}"
+#       MINIO_ENDPOINT: "{{ minio_endpoint }}"
+#       MINIO_ACCESS_KEY: "{{ minio_access_key }}"
+#       MINIO_SECRET_KEY: "{{ minio_secret_key }}"
+#       QE_ANSIBLE_URL: "{{ ansible_url }}"
+#       QE_ANSIBLE_BRANCH: "{{ ansible_branch }}"
