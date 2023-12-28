@@ -97,22 +97,22 @@
 # https://peterbabic.dev/blog/tips-for-rootless-docker-on-arch-with-ansible/
 # docker rootless puts the sock in user space like, unix:///run/user/1000/docker.sock
 
-# - name: Create volume for 'jenkins_home'
-#   community.docker.docker_volume:
-#     name: jenkins_home
-#     debug: true
-#     docker_host: "tcp://{{ ip }}:2376"
-#     #use_ssh_client: true
+- name: Create volume for 'jenkins_home'
+  community.docker.docker_volume:
+    name: jenkins_home
+    debug: true
+    docker_host: "tcp://{{ ip }}:2376"
+    #use_ssh_client: true
 
-- name: create volume for jenkins_home
-  ansible.builtin.shell: |
-    /usr/bin/docker volume create jenkins_home
-  register: create_volume_result
+# - name: create volume for jenkins_home
+#   ansible.builtin.shell: |
+#     /usr/bin/docker volume create jenkins_home
+#   register: create_volume_result
 
-- name: debug create_volume_result
-  ansible.builtin.debug:
-    msg: "{{ create_volume_result.stdout }}"
-  ignore_errors: true
+# - name: debug create_volume_result
+#   ansible.builtin.debug:
+#     msg: "{{ create_volume_result.stdout }}"
+#   ignore_errors: true
 
 # - name: template docker-compose.yaml to /home/ubuntu
 #   ansible.builtin.template:
