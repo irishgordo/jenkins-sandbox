@@ -6,3 +6,148 @@
   ansible.builtin.debug:
     msg: "{{ say_hello_result.stdout }}"
   ignore_errors: true
+
+# copy the Dockerfile over to /home/ubuntu and force copy it over if it already exists
+- name: copy Dockerfile to /home/ubuntu
+  ansible.builtin.copy:
+    src: Dockerfile
+    dest: /home/ubuntu/Dockerfile
+    force: yes
+
+- name: debug copy Dockerfile to /home/ubuntu
+  ansible.builtin.debug:
+    msg: "Dockerfile copied to /home/ubuntu"
+  ignore_errors: true
+
+- name: copy build_docker_image.sh to /home/ubuntu
+  ansible.builtin.copy:
+    src: build_docker_image.sh
+    dest: /home/ubuntu/build_docker_image.sh
+    force: yes
+  register: copy_build_docker_image_result
+
+- name: debug the copy_build_docker_image_result
+  ansible.builtin.debug:
+    msg: "{{ copy_build_docker_image_result.stdout }}"
+  ignore_errors: true
+
+- name: copy over all *.groovy files to /home/ubuntu
+  ansible.builtin.copy:
+    src: "*.groovy"
+    dest: /home/ubuntu/
+    force: yes
+  register: copy_groovy_files_result
+
+- name: debug the copy_groovy_files_result
+  ansible.builtin.debug:
+    msg: "{{ copy_groovy_files_result.stdout }}"
+  ignore_errors: true
+
+- name: copy over plugins.txt to /home/ubuntu
+  ansible.builtin.copy:
+    src: plugins.txt
+    dest: /home/ubuntu/plugins.txt
+    force: yes
+  register: copy_plugins_txt_result
+
+- name: debug the copy_plugins_txt_result
+  ansible.builtin.debug:
+    msg: "{{ copy_plugins_txt_result.stdout }}"
+  ignore_errors: true
+
+- name: template over the config_jenkins_as_code.yaml to /home/ubuntu
+  ansible.builtin.template:
+    src: config_jenkins_as_code.yaml.j2
+    dest: /home/ubuntu/config_jenkins_as_code.yaml
+    force: yes
+  register: template_config_jenkins_as_code_result
+
+- name: debug the template_config_jenkins_as_code_result
+  ansible.builtin.debug:
+    msg: "{{ template_config_jenkins_as_code_result.stdout }}"
+  ignore_errors: true
+
+- name: Set facts
+  set_fact:
+    jenkins_public_endpoint: http://127.0.0.1:8080
+    jenkins_admin_password: jenkins
+    jenkins_dev_password: dev
+    jenkins_admin_email: admin@somecompany.com
+    github_username: ""
+    github_token: ""
+    minio_endpoint: ""
+    minio_access_key: ""
+    minio_secret_key: ""
+    ansible_url: ""
+    ansible_branch: ""
+
+- name: Create volume for 'jenkins_home'
+  community.docker.docker_volume:
+    name: jenkins_home
+
+- name: stopped Jenkins
+  community.docker.docker_container:
+    container_default_behavior: compatibility
+    name: jenkins-ansible
+    state: stopped
+    restart: true
+    image: jenkins/jenkins-ansible:latest
+    detach: true
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    ports:
+      - "80:8080"
+      - "50000:50000"
+    env:
+      SSHPASS: linux
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false -Djenkins.install.SetupWizard.adminInitialApiToken=\"{{ lookup('password', '/dev/null length=20 chars=ascii_letters') }}\" -Dhudson.model.DirectoryBrowserSupport.CSP=\"\""
+      JENKINS_ADMIN_PASSWORD: "{{ jenkins_admin_password }}"
+      JENKINS_DEV_PASSWORD: "{{ jenkins_dev_password }}"
+      JENKINS_PUBLIC_ENDPOINT: "{{ jenkins_public_endpoint }}"
+      JENKINS_ADMIN_EMAIL: "{{ jenkins_admin_email }}"
+      GITHUB_USERNAME: "{{ github_username }}"
+      GITHUB_ACCESS_TOKEN: "{{ github_token }}"
+      MINIO_ENDPOINT: "{{ minio_endpoint }}"
+      MINIO_ACCESS_KEY: "{{ minio_access_key }}"
+      MINIO_SECRET_KEY: "{{ minio_secret_key }}"
+      QE_ANSIBLE_URL: "{{ ansible_url }}"
+      QE_ANSIBLE_BRANCH: "{{ ansible_branch }}"
+  ignore_errors: true
+
+- name: run ./build_docker_image.sh
+  ansible.builtin.shell: /home/ubuntu/build_docker_image.sh
+  register: build_docker_image_result
+
+- name: debug build_docker_image_result
+  ansible.builtin.debug:
+    msg: "{{ build_docker_image_result.stdout }}"
+  ignore_errors: true
+
+
+- name: started Jenkins
+  community.docker.docker_container:
+    container_default_behavior: compatibility
+    name: jenkins-ansible
+    state: started
+    restart: true
+    image: jenkins/jenkins-ansible:latest
+    detach: true
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    ports:
+      - "80:8080"
+      - "50000:50000"
+    env:
+      SSHPASS: linux
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false -Djenkins.install.SetupWizard.adminInitialApiToken=\"{{ lookup('password', '/dev/null length=20 chars=ascii_letters') }}\" -Dhudson.model.DirectoryBrowserSupport.CSP=\"\""
+      JENKINS_ADMIN_PASSWORD: "{{ jenkins_admin_password }}"
+      JENKINS_DEV_PASSWORD: "{{ jenkins_dev_password }}"
+      JENKINS_PUBLIC_ENDPOINT: "{{ jenkins_public_endpoint }}"
+      JENKINS_ADMIN_EMAIL: "{{ jenkins_admin_email }}"
+      GITHUB_USERNAME: "{{ github_username }}"
+      GITHUB_ACCESS_TOKEN: "{{ github_token }}"
+      MINIO_ENDPOINT: "{{ minio_endpoint }}"
+      MINIO_ACCESS_KEY: "{{ minio_access_key }}"
+      MINIO_SECRET_KEY: "{{ minio_secret_key }}"
+      QE_ANSIBLE_URL: "{{ ansible_url }}"
+      QE_ANSIBLE_BRANCH: "{{ ansible_branch }}"

@@ -45,6 +45,9 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
         - neovim
         - wget
         - ca-certificates
+        - python3
+        - python3-pip
+        - jq
         - curl
         - gnupg-agent
         - gnupg
@@ -63,6 +66,12 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
         - usermod -aG docker ubuntu
         - systemctl enable docker.service
         - systemctl enable containerd.service
+        - [pip3, install, ansible]
+        - [pip3, install, ansible-core]
+        - [ansible-galaxy, collection, install, community.general]
+        - [ansible-galaxy, collection, install, community.docker]
+        - [ansible-galaxy, collection, install, community.kubernetes]
+        - [ansible-galaxy, collection, install, ansible.posix]
       ssh_authorized_keys:
         - ${var.SSH_KEY}
     EOF

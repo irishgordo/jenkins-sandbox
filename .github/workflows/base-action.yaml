@@ -35,6 +35,8 @@ jobs:
     steps:
       - name: terraform init
         run: TF_LOG=TRACE terraform init -var-file="env/local.tfvars"
+      - name: terraform destroy with auto approval of the vm and cloud init to reprovision
+        run: TF_LOG=TRACE terraform destroy -var-file="env/local.tfvars" -auto-approve -target harvester_virtualmachine.jenkinssbxvm-vm -target harvester_cloudinit_secret.cloud-config-jenkinssbxvm
       - name: terraform plan
         run: TF_LOG=TRACE terraform plan -var-file="env/local.tfvars"
       - name: terraform apply with auto aproval
