@@ -58,8 +58,8 @@
 
 - name: copy over plugins.txt to /home/ubuntu
   ansible.builtin.copy:
-    src: plugins.txt
-    dest: /home/ubuntu/plugins.txt
+    src: jenkins_plugins.txt
+    dest: /home/ubuntu
     force: yes
   register: copy_plugins_txt_result
 
