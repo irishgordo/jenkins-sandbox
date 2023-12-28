@@ -34,7 +34,7 @@ jobs:
           ./ci-cd-scripts/show-env.sh
       - name: Build the known_hosts file the temp one
         run: |
-          echo "" > ${{ runner.temp }}/temp_known_hosts
+          echo "" > ${{ runner.temp }}/temp_known_hosts && chmod 600 ${{ runner.temp }}/temp_known_hosts
       - name: copy current github private runners kubeconfig for harvester cluster to this directory since we are going to use that to build are resources plus ansible
         run: cp -v /home/ubuntu/sandbox-harvester-cluster-kubeconfig.yaml local.yaml
   terraform:
