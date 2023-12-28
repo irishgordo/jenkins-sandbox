@@ -50,6 +50,6 @@ jobs:
       - name: terraform destroy with auto approval of the vm and cloud init to reprovision
         run: TF_LOG=TRACE terraform destroy -var-file="env/local.tfvars" -auto-approve -target harvester_virtualmachine.jenkinssbxvm-vm -target harvester_cloudinit_secret.cloud-config-jenkinssbxvm -target ansible_playbook.jenkinssbxvm-vm-ansible-playbook
       - name: terraform plan
-        run: TF_LOG=TRACE terraform plan -var-file="env/local.tfvars"
+        run: TF_LOG=TRACE terraform plan -var-file="env/local.tfvars" -var "runnertempknownhosts=${{ runner.temp }}/temp_known_hosts"
       - name: terraform apply with auto aproval
-        run: TF_LOG=TRACE terraform apply -var-file="env/local.tfvars" -auto-approve
+        run: TF_LOG=TRACE terraform apply -var-file="env/local.tfvars" -var "runnertempknownhosts=${{ runner.temp }}/temp_known_hosts" -auto-approve
