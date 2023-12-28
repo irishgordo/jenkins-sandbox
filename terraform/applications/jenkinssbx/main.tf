@@ -78,31 +78,31 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
 
 }
 
-# resource "ansible_playbook" "integration-vm-server" {
-#   depends_on = [
-#     harvester_virtualmachine.jenkinssbxvm-vm
-#   ]
-#   ansible_playbook_binary = "ansible-playbook" # this parameter is optional, default is "ansible-playbook"
-#   playbook                = "ansible/jenkinssbx-vm.yml"
+resource "ansible_playbook" "integration-vm-server" {
+  depends_on = [
+    harvester_virtualmachine.jenkinssbxvm-vm
+  ]
+  ansible_playbook_binary = "ansible-playbook" # this parameter is optional, default is "ansible-playbook"
+  playbook                = "ansible/jenkinssbx-vm.yml"
 
-#   # Inventory configuration
-#   name   = "${var.JENKINSSBXVM_NAME} ansible_host=${harvester_virtualmachine.jenkinssbxvm-vm.network_interface[0].ip_address} ansible_sudo_pass=${var.JENKINSSBXVM_VM_PW} ansible_ssh_user=ubuntu ansible_ssh_password=${var.JENKINSSBXVM_VM_PW} ansible_ssh_common_args='-o StrictHostKeyChecking=no'"  # name of the host to use for inventory configuration
+  # Inventory configuration
+  name   = "${var.JENKINSSBXVM_NAME} ansible_host=${harvester_virtualmachine.jenkinssbxvm-vm.network_interface[0].ip_address} ansible_sudo_pass=${var.JENKINSSBXVM_VM_PW} ansible_ssh_user=ubuntu ansible_ssh_password=${var.JENKINSSBXVM_VM_PW} ansible_ssh_common_args='-o StrictHostKeyChecking=no'"  # name of the host to use for inventory configuration
 
-#   check_mode = false
-#   diff_mode  = false
-#   var_files = [
-#     "ansible/jenkinssbx-vm-vars.yml"
-#   ]
-#   ignore_playbook_failure = true
+  check_mode = false
+  diff_mode  = false
+  var_files = [
+    "ansible/jenkinssbx-vm-vars.yml"
+  ]
+  ignore_playbook_failure = true
 
-#   # Connection configuration and other vars
-#   extra_vars = {
-#     ip = harvester_virtualmachine.jenkinssbxvm-vm.network_interface[0].ip_address
-#   }
+  # Connection configuration and other vars
+  extra_vars = {
+    ip = harvester_virtualmachine.jenkinssbxvm-vm.network_interface[0].ip_address
+  }
 
-#   replayable = true
-#   verbosity  = 6 # set the verbosity level of the debug output for this playbook
-# }
+  replayable = true
+  verbosity  = 6 # set the verbosity level of the debug output for this playbook
+}
 
 resource "harvester_virtualmachine" "jenkinssbxvm-vm" {
   depends_on = [
