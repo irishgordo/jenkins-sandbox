@@ -126,7 +126,8 @@
   ignore_errors: true
 
 - name: run build_docker_image.sh
-  ansible.builtin.shell: cd /home/ubuntu && ./build_docker_image.sh
+  ansible.builtin.shell: |
+    cd /home/ubuntu && ./build_docker_image.sh
   register: build_docker_image_result
 
 - name: debug build_docker_image_result
