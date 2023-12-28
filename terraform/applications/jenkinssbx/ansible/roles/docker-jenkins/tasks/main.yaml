@@ -93,21 +93,24 @@
     minio_secret_key: ""
     ansible_url: ""
     ansible_branch: ""
+#       docker_host: "unix://{{ ansible_env.XDG_RUNTIME_DIR }}/docker.sock"
+# https://peterbabic.dev/blog/tips-for-rootless-docker-on-arch-with-ansible/
+# docker rootless puts the sock in user space like, unix:///run/user/1000/docker.sock
 
 - name: Create volume for 'jenkins_home'
   community.docker.docker_volume:
     name: jenkins_home
     debug: true
-    use_ssh_client: true
+    docker_host: "unix://{{ ansible_env.XDG_RUNTIME_DIR }}/docker.sock"
 
 - name: stopped Jenkins
   community.docker.docker_container:
     container_default_behavior: compatibility
     name: jenkins-ansible
     state: stopped
-    use_ssh_client: true
     debug: true
     restart: true
+    docker_host: "unix://{{ ansible_env.XDG_RUNTIME_DIR }}/docker.sock"
     image: jenkins/jenkins-ansible:latest
     detach: true
     volumes:
@@ -148,8 +151,8 @@
     debug: true
     name: jenkins-ansible
     state: started
-    use_ssh_client: true
     restart: true
+    docker_host: "unix://{{ ansible_env.XDG_RUNTIME_DIR }}/docker.sock"
     image: jenkins/jenkins-ansible:latest
     detach: true
     volumes:
