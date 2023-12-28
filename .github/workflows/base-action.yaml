@@ -23,6 +23,7 @@ jobs:
       - name: Run the scripts
         run: |
           ./ci-cd-scripts/show-env.sh
+          ./ci-cd-scripts/dump-known-hosts.sh
       - name: copy current github private runners kubeconfig for harvester cluster to this directory since we are going to use that to build are resources plus ansible
         run: cp -v /home/ubuntu/sandbox-harvester-cluster-kubeconfig.yaml local.yaml
   terraform:
