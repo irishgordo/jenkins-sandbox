@@ -86,7 +86,7 @@ resource "ansible_playbook" "jenkinssbxvm-vm-ansible-playbook" {
   playbook                = "ansible/jenkinssbx-vm.yml"
 
   # Inventory configuration
-  name   = "${var.JENKINSSBXVM_NAME} ansible_host=${harvester_virtualmachine.jenkinssbxvm-vm.network_interface[0].ip_address} ansible_sudo_pass=${var.JENKINSSBXVM_VM_PW} ansible_ssh_user=ubuntu ansible_ssh_password=${var.JENKINSSBXVM_VM_PW} ansible_ssh_common_args='-o StrictHostKeyChecking=no  UserKnownHostsFile=${var.runnertempknownhosts}'"  # name of the host to use for inventory configuration
+  name   = "${var.JENKINSSBXVM_NAME} ansible_host=${harvester_virtualmachine.jenkinssbxvm-vm.network_interface[0].ip_address} ansible_sudo_pass=${var.JENKINSSBXVM_VM_PW} ansible_ssh_user=ubuntu ansible_ssh_password=${var.JENKINSSBXVM_VM_PW} ansible_ssh_common_args='-o StrictHostKeyChecking=no UserKnownHostsFile=${var.runnertempknownhosts}'"  # name of the host to use for inventory configuration
 
   check_mode = false
   diff_mode  = false

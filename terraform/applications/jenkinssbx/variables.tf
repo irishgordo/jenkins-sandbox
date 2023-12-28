@@ -70,3 +70,9 @@ variable JENKINSSBXVM_VM_NETWORK_VM_NET_NAME {
   type = string
   default = "eno2vlan12"
 }
+
+variable "runnertempknownhosts" {
+    description = "the location of the known_hosts file"
+    type = string
+    default = "purposefully-bad-path"
+}
