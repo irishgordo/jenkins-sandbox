@@ -94,7 +94,7 @@ resource "ansible_playbook" "jenkinssbxvm-vm-ansible-playbook" {
     "ansible/jenkinssbx-vm-vars.yml"
   ]
   # allows for us to be able to see what failed... ?
-  ignore_playbook_failure = false
+  ignore_playbook_failure = true
 
   # Connection configuration and other vars
   extra_vars = {
