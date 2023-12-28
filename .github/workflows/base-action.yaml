@@ -1,7 +1,7 @@
 name: base-actions-jenkins-sandbox
 run-name: Jenkins Sandbox
 env:
-  TF_VAR_runnertempknownhosts: "${{ runner.temp }}/temp_known_hosts"
+  TF_VAR_runnertempknownhosts: "placeholder"
 on:
   push:
     branches:
@@ -10,6 +10,13 @@ on:
     branches:
       - sandbox
 jobs:
+  get-env-vars:
+    name: Get Environment vars
+    runs-on: some-runner
+    outputs:
+      TF_VAR_runnertempknownhosts: ${{ runner.temp }}/temp_known_hosts
+    steps:
+      - run: echo "null"
   checkout-start:
     environment: sandbox
     runs-on: self-hosted
@@ -35,7 +42,7 @@ jobs:
     defaults:
       run:
         working-directory: ./terraform/applications/jenkinssbx
-    needs: [checkout-start, list-stats]
+    needs: [checkout-start, list-stats, get-env-vars]
     runs-on: self-hosted
     steps:
       - name: terraform init
