@@ -93,7 +93,7 @@ resource "ansible_playbook" "integration-vm-server" {
   var_files = [
     "ansible/jenkinssbx-vm-vars.yml"
   ]
-  ignore_playbook_failure = true
+  ignore_playbook_failure = false
 
   # Connection configuration and other vars
   extra_vars = {
