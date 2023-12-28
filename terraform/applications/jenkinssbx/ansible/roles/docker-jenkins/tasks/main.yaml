@@ -101,7 +101,7 @@
   community.docker.docker_volume:
     name: jenkins_home
     debug: true
-    docker_host: "unix://{{ ansible_env.XDG_RUNTIME_DIR }}/docker.sock"
+    docker_host: "unix:///run/user/1000/docker.sock"
 
 - name: stopped Jenkins
   community.docker.docker_container:
@@ -110,7 +110,7 @@
     state: stopped
     debug: true
     restart: true
-    docker_host: "unix://{{ ansible_env.XDG_RUNTIME_DIR }}/docker.sock"
+    docker_host: "unix:///run/user/1000/docker.sock"
     image: jenkins/jenkins-ansible:latest
     detach: true
     volumes:
@@ -152,7 +152,7 @@
     name: jenkins-ansible
     state: started
     restart: true
-    docker_host: "unix://{{ ansible_env.XDG_RUNTIME_DIR }}/docker.sock"
+    docker_host: "unix:///run/user/1000/docker.sock"
     image: jenkins/jenkins-ansible:latest
     detach: true
     volumes:
