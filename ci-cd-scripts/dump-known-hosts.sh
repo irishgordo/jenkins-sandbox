@@ -1,16 +1,7 @@
 #!/usr/bin/bash
 
-echo "previous known hosts:"
-echo "======================"
-cat /home/ubuntu/.ssh/known_hosts
-echo "======================"
-
-echo "dumping known hosts:"
-echo "======================"
-echo "" > /home/ubuntu/.ssh/known_hosts
-echo "======================"
-
-echo "current known hosts:"
-echo "======================"
-cat /home/ubuntu/.ssh/known_hosts
-echo "======================"
+# if file /tmp/temp_known_hosts exists, delete it
+if [ -f /tmp/temp_known_hosts ] ; then
+    rm /tmp/temp_known_hosts
+fi
+touch /tmp/temp_known_hosts
