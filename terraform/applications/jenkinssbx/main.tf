@@ -76,23 +76,24 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
         - systemctl enable docker.service
         - systemctl enable containerd.service
         - [pip3, install, ansible]
+        - [pip3, install, docker]
         - [pip3, install, ansible-core]
         - [ansible-galaxy, collection, install, community.general]
         - [ansible-galaxy, collection, install, community.docker]
         - [ansible-galaxy, collection, install, community.kubernetes]
         - [ansible-galaxy, collection, install, ansible.posix]
-        - mkdir -p /etc/docker
-        - systemctl stop docker
-        - cp /lib/systemd/system/docker.service /etc/systemd/system/
-        - sed -i 's/\ -H\ fd:\/\///g' /etc/systemd/system/docker.service
-        - cp -v /tmp/docker-daemon.json /etc/docker/daemon.json
-        - systemctl daemon-reload
-        - systemctl restart docker
       ssh_authorized_keys:
         - ${var.SSH_KEY}
     EOF
 
 }
+        # - mkdir -p /etc/docker
+        # - systemctl stop docker
+        # - cp /lib/systemd/system/docker.service /etc/systemd/system/
+        # - sed -i 's/\ -H\ fd:\/\///g' /etc/systemd/system/docker.service
+        # - cp -v /tmp/docker-daemon.json /etc/docker/daemon.json
+        # - systemctl daemon-reload
+        # - systemctl restart docker
 
 resource "ansible_playbook" "jenkinssbxvm-vm-ansible-playbook" {
   depends_on = [
