@@ -42,14 +42,16 @@
     msg: "{{ make_build_docker_image_executable_result.stdout }}"
   ignore_errors: true
 
-- name: copy over all *.groovy files to /home/ubuntu
+- name: copy over the groovy files
   ansible.builtin.copy:
-    src: "*.groovy"
-    dest: /home/ubuntu/
+    src: "{{ item }}"
+    dest: /home/ubuntu
     force: yes
+  with_items:
+    - test_job.groovy
   register: copy_groovy_files_result
 
-- name: debug the copy_groovy_files_result
+- name: debug copy_groovy_files_result
   ansible.builtin.debug:
     msg: "{{ copy_groovy_files_result.stdout }}"
   ignore_errors: true
