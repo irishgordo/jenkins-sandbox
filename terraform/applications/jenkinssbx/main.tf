@@ -82,7 +82,7 @@ resource "ansible_playbook" "jenkinssbxvm-vm-ansible-playbook" {
   depends_on = [
     harvester_virtualmachine.jenkinssbxvm-vm
   ]
-  ansible_playbook_binary = "/usr/local/bin/ansible-playbook" # this parameter is optional, default is "ansible-playbook"
+  ansible_playbook_binary = "/home/ubuntu/.local/bin/ansible-playbook" # this parameter is optional, default is "ansible-playbook"
   playbook                = "ansible/jenkinssbx-vm.yml"
 
   # Inventory configuration
