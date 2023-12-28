@@ -56,6 +56,14 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
         - coreutils
         - sshpass
         - tmux
+        - net-tools
+      write_files:
+        - path: /tmp/docker-daemon.json
+          owner: ubuntu:ubuntu
+          content: |
+            {
+              "hosts": ["unix:///var/run/docker.sock", "tcp://127.0.0.1:2376"]
+            }
       runcmd:
         - - systemctl
           - enable
@@ -72,6 +80,9 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
         - [ansible-galaxy, collection, install, community.docker]
         - [ansible-galaxy, collection, install, community.kubernetes]
         - [ansible-galaxy, collection, install, ansible.posix]
+        - cp -v /tmp/docker-daemon.json /etc/docker/daemon.json
+        - systemctl daemon-reload
+        - systemctl restart docker
       ssh_authorized_keys:
         - ${var.SSH_KEY}
     EOF
