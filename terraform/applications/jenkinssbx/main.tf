@@ -26,6 +26,7 @@ resource "harvester_ssh_key" "jenkinssbxvm-ssh-key" {
   public_key = var.SSH_KEY
 }
 
+# docker doesnt like host configuration in daemon.json - https://stackoverflow.com/a/44053219
 resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
     name = "cloud-config-jenkinssbxvm"
     namespace = "default"
@@ -80,6 +81,10 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
         - [ansible-galaxy, collection, install, community.docker]
         - [ansible-galaxy, collection, install, community.kubernetes]
         - [ansible-galaxy, collection, install, ansible.posix]
+        - mkdir -p /etc/docker
+        - systemctl stop docker
+        - cp /lib/systemd/system/docker.service /etc/systemd/system/
+        - sed -i 's/\ -H\ fd:\/\///g' /etc/systemd/system/docker.service
         - cp -v /tmp/docker-daemon.json /etc/docker/daemon.json
         - systemctl daemon-reload
         - systemctl restart docker
