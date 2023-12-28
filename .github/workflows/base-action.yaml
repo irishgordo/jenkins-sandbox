@@ -1,5 +1,7 @@
 name: base-actions-jenkins-sandbox
 run-name: Jenkins Sandbox
+env:
+  TF_VAR_runnertempknownhosts: "${{ runner.temp }}/temp_known_hosts"
 on:
   push:
     branches:
@@ -29,8 +31,6 @@ jobs:
       - name: copy current github private runners kubeconfig for harvester cluster to this directory since we are going to use that to build are resources plus ansible
         run: cp -v /home/ubuntu/sandbox-harvester-cluster-kubeconfig.yaml local.yaml
   terraform:
-    env:
-      TF_VAR_runnertempknownhosts: "${{ runner.temp }}/temp_known_hosts"
     environment: sandbox
     defaults:
       run:
