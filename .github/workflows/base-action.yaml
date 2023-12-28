@@ -12,7 +12,7 @@ on:
 jobs:
   get-env-vars:
     name: Get Environment vars
-    runs-on: some-runner
+    runs-on: self-hosted
     outputs:
       TF_VAR_runnertempknownhosts: ${{ runner.temp }}/temp_known_hosts
     steps:
