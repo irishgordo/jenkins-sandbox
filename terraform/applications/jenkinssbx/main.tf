@@ -87,6 +87,12 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
         - [ansible-galaxy, collection, install, ansible.posix]
       ssh_authorized_keys:
         - ${var.SSH_KEY}
+      power_state:
+        delay: "now"
+        mode: reboot
+        message: Bye Bye
+        timeout: 30
+        condition: True
     EOF
 
 }
