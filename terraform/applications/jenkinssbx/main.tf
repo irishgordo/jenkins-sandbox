@@ -79,6 +79,8 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
         - [ansible-galaxy, collection, install, community.docker]
         - [ansible-galaxy, collection, install, community.kubernetes]
         - [ansible-galaxy, collection, install, ansible.posix]
+        - echo "export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock" >> /root/.profile
+        - echo "export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock" >> /home/ubuntu/.profile
       ssh_authorized_keys:
         - ${var.SSH_KEY}
       power_state:
