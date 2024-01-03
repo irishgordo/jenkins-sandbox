@@ -65,6 +65,7 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
           - qemu-guest-agent.service
         - curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
         - sh /tmp/get-docker.sh
+        - usermod -aG docker $USER
         - usermod -aG docker ubuntu
         - systemctl enable docker.service
         - systemctl enable containerd.service
