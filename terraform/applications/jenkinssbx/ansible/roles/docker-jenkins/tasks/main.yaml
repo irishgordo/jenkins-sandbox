@@ -194,6 +194,7 @@
       path: /home/ubuntu/Dockerfile
     source: build
     state: present
+    docker_host: "unix:///run/user/1000/docker.sock"
   register: build_container_image_result
 
 - name: debug build_container_image_result
