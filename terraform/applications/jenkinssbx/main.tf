@@ -69,7 +69,9 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
         - usermod -aG docker ubuntu
         - systemctl enable docker.service
         - systemctl enable containerd.service
-        - cp -v /tmp/override.conf /etc/systemd/system/docker.service.d/override.conf
+        - systemctl stop docker
+        - cp /lib/systemd/system/docker.service /etc/systemd/system/
+        - sed -i 's/\ -H\ fd:\/\///g' /etc/systemd/system/docker.service
         - mkdir -p /etc/docker
         - cp -v /tmp/docker-daemon.json /etc/docker/daemon.json
         - systemctl daemon-reload
@@ -91,6 +93,8 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
           owner: root:root
           content: |
             {
+              "api-enable-cors": true,
+              "api-cors-header": "*",
               "hosts": ["unix:///var/run/docker.sock", "tcp://0.0.0.0:2376"]
             }
         - path: /tmp/override.conf
