@@ -75,6 +75,9 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
         - usermod -aG docker ubuntu
         - systemctl enable docker.service
         - systemctl enable containerd.service
+        - systemctl daemon-reload
+        - systemctl restart docker.service
+        - systemctl restart containerd.service
         - [pip3, install, ansible]
         - [pip3, install, docker]
         - [pip3, install, ansible-core]
