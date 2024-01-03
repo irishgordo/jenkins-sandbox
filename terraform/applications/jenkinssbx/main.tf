@@ -93,8 +93,6 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
           owner: root:root
           content: |
             {
-              "api-enable-cors": true,
-              "api-cors-header": "*",
               "hosts": ["unix:///var/run/docker.sock", "tcp://0.0.0.0:2376"]
             }
         - path: /tmp/override.conf
