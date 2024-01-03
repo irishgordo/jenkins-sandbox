@@ -58,13 +58,6 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
         - sshpass
         - tmux
         - net-tools
-      write_files:
-        - path: /tmp/docker-daemon.json
-          owner: ubuntu:ubuntu
-          content: |
-            {
-              "hosts": ["unix:///var/run/docker.sock", "tcp://127.0.0.1:2376"]
-            }
       runcmd:
         - - systemctl
           - enable
@@ -103,6 +96,13 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
         # - cp -v /tmp/docker-daemon.json /etc/docker/daemon.json
         # - systemctl daemon-reload
         # - systemctl restart docker
+        #       write_files:
+        # - path: /tmp/docker-daemon.json
+        #   owner: ubuntu:ubuntu
+        #   content: |
+        #     {
+        #       "hosts": ["unix:///var/run/docker.sock", "tcp://127.0.0.1:2376"]
+        #     }
 
 resource "ansible_playbook" "jenkinssbxvm-vm-ansible-playbook" {
   depends_on = [
