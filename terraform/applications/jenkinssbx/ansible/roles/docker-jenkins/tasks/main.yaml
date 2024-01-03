@@ -179,7 +179,7 @@
   ignore_errors: true
 
 - name: change directory to /home/ubuntu
-  ansible.builtin.chdir: cd /home/ubuntu
+  ansible.builtin.command: cd /home/ubuntu
   register: change_directory_result
 
 - name: debug change_directory_result
