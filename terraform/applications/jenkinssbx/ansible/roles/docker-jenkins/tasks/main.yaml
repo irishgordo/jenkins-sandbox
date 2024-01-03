@@ -178,6 +178,31 @@
     msg: "{{ build_docker_image_result.stdout }}"
   ignore_errors: true
 
+- name: change directory to /home/ubuntu
+  ansible.builtin.chdir: cd /home/ubuntu
+  register: change_directory_result
+
+- name: debug change_directory_result
+  ansible.builtin.debug:
+    msg: "{{ change_directory_result.stdout }}"
+  ignore_errors: true
+
+- name: build container image
+  community.docker.docker_image:
+    name: jenkins/jenkins-ansible:latest
+    build:
+      path: /home/ubuntu/Dockerfile
+      source: build
+    state: present
+  register: build_container_image_result
+
+- name: debug build_container_image_result
+  ansible.builtin.debug:
+    msg: "{{ build_container_image_result.stdout }}"
+  ignore_errors: true
+
+    # docker_host: "unix:///var/run/docker.sock"
+    # user: ubuntu:ubuntu
 # - name: ansible-builtin docker-compose up
 #   ansible.builtin.shell: |
 #     cd /home/ubuntu && /usr/bin/docker compose up -d
