@@ -4,4 +4,5 @@
 if [ ! -f './jenkins_ansible_key' ] ; then
     ssh-keygen -f jenkins_ansible_key -q -N ""
 fi
-docker build -t jenkins/jenkins-ansible:latest .
+export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
+docker -H $DOCKER_HOST build -t jenkins/jenkins-ansible:latest .
