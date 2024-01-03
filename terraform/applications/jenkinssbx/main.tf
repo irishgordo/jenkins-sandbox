@@ -69,6 +69,9 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
         - usermod -aG docker ubuntu
         - systemctl enable docker.service
         - systemctl enable containerd.service
+        - cp -v /tmp/override.conf /etc/systemd/system/docker.service.d/override.conf
+        - mkdir -p /etc/docker
+        - cp -v /tmp/docker-daemon.json /etc/docker/daemon.json
         - systemctl daemon-reload
         - systemctl restart docker.service
         - systemctl restart containerd.service
@@ -83,6 +86,19 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
         - echo "export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock" >> /home/ubuntu/.profile
       ssh_authorized_keys:
         - ${var.SSH_KEY}
+      write_files:
+        - path: /tmp/docker-daemon.json
+          owner: root:root
+          content: |
+            {
+              "hosts": ["unix:///var/run/docker.sock", "tcp://0.0.0.0:2376"]
+            }
+        - path: /tmp/override.conf
+          owner: root:root
+          content: |
+            [Service]
+            ExecStart=
+            ExecStart=/usr/bin/dockerd --config-file /etc/docker/daemon.json
       power_state:
         delay: "now"
         mode: reboot
