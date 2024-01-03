@@ -192,7 +192,7 @@
     name: jenkins/jenkins-ansible:latest
     build:
       path: /home/ubuntu/Dockerfile
-      source: build
+    source: build
     state: present
   register: build_container_image_result
 
