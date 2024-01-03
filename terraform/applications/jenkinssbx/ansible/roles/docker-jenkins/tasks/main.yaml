@@ -178,14 +178,14 @@
     msg: "{{ build_docker_image_result.stdout }}"
   ignore_errors: true
 
-- name: change directory to /home/ubuntu
-  ansible.builtin.command: cd /home/ubuntu
-  register: change_directory_result
+# - name: change directory to /home/ubuntu
+#   ansible.builtin.command: cd /home/ubuntu
+#   register: change_directory_result
 
-- name: debug change_directory_result
-  ansible.builtin.debug:
-    msg: "{{ change_directory_result.stdout }}"
-  ignore_errors: true
+# - name: debug change_directory_result
+#   ansible.builtin.debug:
+#     msg: "{{ change_directory_result.stdout }}"
+#   ignore_errors: true
 
 - name: build container image
   community.docker.docker_image:
