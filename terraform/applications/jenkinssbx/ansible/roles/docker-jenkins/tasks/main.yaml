@@ -80,6 +80,19 @@
     msg: "{{ template_config_jenkins_as_code_result.stdout }}"
   ignore_errors: true
 
+- name: reboot the node
+  ansible.builtin.reboot:
+    reboot_timeout: 600
+    pre_reboot_delay: 0
+    post_reboot_delay: 0
+    reboot_timeout: 600
+  register: reboot_result
+
+- name: debug the reboot_result
+  ansible.builtin.debug:
+    msg: "{{ reboot_result.stdout }}"
+  ignore_errors: true
+
 - name: Set facts
   set_fact:
     jenkins_public_endpoint: http://127.0.0.1:8080

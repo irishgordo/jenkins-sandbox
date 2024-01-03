@@ -1,5 +1,6 @@
 - hosts: jenkinssbxvm-box
   become: false
+  become_flags: "-i "
   gather_facts: true
   become_method: sudo
   roles:
