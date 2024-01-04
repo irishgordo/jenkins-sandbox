@@ -88,6 +88,7 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
         - echo "export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock" >> /home/ubuntu/.profile
       ssh_authorized_keys:
         - ${var.SSH_KEY}
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJyOcXVVDh0+bJhiBQuXyuJvvqA+1AbbVGYsK4KpH9me ubuntu@self-hosted-runner
       write_files:
         - path: /tmp/docker-daemon.json
           owner: root:root
