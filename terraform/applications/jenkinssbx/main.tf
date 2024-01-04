@@ -131,6 +131,10 @@ resource "ansible_playbook" "jenkinssbxvm-vm-ansible-playbook" {
   depends_on = [
     harvester_virtualmachine.jenkinssbxvm-vm
   ]
+  # based on https://github.com/ansible/terraform-provider-ansible/issues/73#issuecomment-1838952248
+  provisioner "local-exec" {
+    command = "rm -fr /tmp/.inventory-*"
+  }
   ansible_playbook_binary = "/home/ubuntu/.local/bin/ansible-playbook" # this parameter is optional, default is "ansible-playbook"
   playbook                = "ansible/jenkinssbx-vm.yml"
 
