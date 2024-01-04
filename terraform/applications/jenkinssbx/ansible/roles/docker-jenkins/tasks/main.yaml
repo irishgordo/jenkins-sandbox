@@ -194,6 +194,8 @@
       path: /home/ubuntu/Dockerfile
     source: build
     state: present
+    tls: false
+    debug: true
     # add host to .profile for root and ubuntu
     docker_host: "tcp://{{ ip }}:2376"
     #docker_host: "unix://{{ ansible_env.XDG_RUNTIME_DIR }}/docker.sock"
