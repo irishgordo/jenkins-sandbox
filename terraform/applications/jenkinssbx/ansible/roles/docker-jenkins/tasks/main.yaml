@@ -146,18 +146,19 @@
     msg: "{{ build_docker_image_result.stdout }}"
   ignore_errors: true
 
-- name: build container image
-  community.docker.docker_image:
-    name: jenkins/jenkins-ansible:latest
-    build:
-      path: /home/ubuntu/Dockerfile
-    source: build
-    state: present
-    tls: false
-    debug: true
-    # add host to .profile for root and ubuntu
-    docker_host: "tcp://{{ ip }}:2376"
-  register: build_container_image_result
+# TODO: remove, I don't think this handles it if the path is on the remote host already and not the controller/driver/thing-running-ansible-node
+# - name: build container image
+#   community.docker.docker_image:
+#     name: jenkins/jenkins-ansible:latest
+#     build:
+#       path: /home/ubuntu/Dockerfile
+#     source: build
+#     state: present
+#     tls: false
+#     debug: true
+#     # add host to .profile for root and ubuntu
+#     docker_host: "tcp://{{ ip }}:2376"
+#   register: build_container_image_result
 
 - name: debug build_container_image_result
   ansible.builtin.debug:
