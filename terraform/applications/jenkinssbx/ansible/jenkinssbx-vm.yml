@@ -1,5 +1,5 @@
 - hosts: jenkinssbxvm-box
-  become: true
+  become: false
   become_user: root
   become_flags: "-i "
   gather_facts: true
