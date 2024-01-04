@@ -58,16 +58,16 @@
     msg: "Dockerfile copied to /home/ubuntu"
   ignore_errors: true
 
-- name: copy build_docker_image.sh to /home/ubuntu
-  ansible.builtin.copy:
-    src: build_docker_image.sh
+- name: template over build_docker_image.sh to /home/ubuntu
+  ansible.builtin.template:
+    src: build_docker_image.sh.j2
     dest: /home/ubuntu/build_docker_image.sh
     force: yes
-  register: copy_build_docker_image_result
+  register: template_build_docker_image_result
 
-- name: debug the copy_build_docker_image_result
+- name: debug the template_build_docker_image_result
   ansible.builtin.debug:
-    msg: "{{ copy_build_docker_image_result.stdout }}"
+    msg: "{{ template_build_docker_image_result.stdout }}"
   ignore_errors: true
 
 - name: make /home/ubuntu/build_docker_image.sh executable
