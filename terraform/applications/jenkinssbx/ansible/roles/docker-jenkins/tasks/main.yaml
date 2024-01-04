@@ -16,15 +16,27 @@
     msg: "{{ get_route_result.stdout }}"
   ignore_errors: true
 
-- name: try raw curl
-  ansible.builtin.shell: curl -v http://{{ ip }}:2376/_ping
-  register: try_raw_curl_result
+- name: make sure docker service is started
+  ansible.builtin.service:
+    name: docker
+    state: started
+  register: docker_service_started_result
 
-- name: debug try_raw_curl_result
+- name: debug docker_service_started_result
   ansible.builtin.debug:
-    msg: "{{ try_raw_curl_result.stdout }}"
+    msg: "{{ docker_service_started_result.stdout }}"
   ignore_errors: true
 
+# - name: try raw curl
+#   ansible.builtin.shell: curl -v http://{{ ip }}:2376/_ping
+#   register: try_raw_curl_result
+
+# - name: debug try_raw_curl_result
+#   ansible.builtin.debug:
+#     msg: "{{ try_raw_curl_result.stdout }}"
+#   ignore_errors: true
+
+# try 10 times to see if docker is up and running
 - name: Check that you can talk to docker over tcp
   ansible.builtin.uri:
     url: "http://{{ ip }}:2376/_ping"
@@ -32,6 +44,9 @@
     follow_redirects: "all"
     force: yes
   register: check_docker_over_tcp_result
+  retries: 10
+  delay: 10
+  until: check_docker_over_tcp_result.status == 200
 
 - name: debug check_docker_over_tcp_result
   ansible.builtin.debug:

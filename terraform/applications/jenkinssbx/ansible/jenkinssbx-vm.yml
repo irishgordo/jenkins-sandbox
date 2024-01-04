@@ -4,7 +4,7 @@
   become_flags: "-i "
   gather_facts: true
   become_method: sudo
-  environment:
-    http_proxy: http://192.168.13.176:8888
+  # environment:
+  #   http_proxy: http://192.168.13.176:8888
   roles:
     - docker-jenkins
