@@ -6,4 +6,4 @@ if [ ! -f './jenkins_ansible_key' ] ; then
 fi
 #export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
 #sudo chown ubuntu:ubuntu $DOCKER_HOST
-/usr/bin/docker -H tcp://{{ ip }}:2376 build -t jenkins/jenkins-ansible:latest .
+DOCKER_HOST=tcp://{{ ip }}:2376 /usr/bin/docker build -t jenkins/jenkins-ansible:latest .
