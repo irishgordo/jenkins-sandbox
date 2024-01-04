@@ -18,8 +18,10 @@
 
 - name: Check that you can talk to docker over tcp
   ansible.builtin.uri:
-    url: http://{{ ip }}:2376/_ping
+    url: "http://{{ ip }}:2376/_ping"
     return_content: yes
+    follow_redirects: "all"
+    force: yes
   register: check_docker_over_tcp_result
 
 - name: debug check_docker_over_tcp_result
