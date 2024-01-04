@@ -7,6 +7,15 @@
     msg: "{{ say_hello_result.stdout }}"
   ignore_errors: true
 
+- name: get route
+  ansible.builtin.shell: ip route
+  register: get_route_result
+
+- name: debug get_route_result
+  ansible.builtin.debug:
+    msg: "{{ get_route_result.stdout }}"
+  ignore_errors: true
+
 - name: Check that you can talk to docker over tcp
   ansible.builtin.uri:
     url: http://{{ ip }}:2376/_ping

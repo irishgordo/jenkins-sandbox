@@ -72,6 +72,8 @@ resource "harvester_cloudinit_secret" "cloud-config-jenkinssbxvm" {
         - systemctl stop docker
         - cp /lib/systemd/system/docker.service /etc/systemd/system/
         - sed -i 's/\ -H\ fd:\/\///g' /etc/systemd/system/docker.service
+        - sed -i 's/PasswordAuthentication\ no/PasswordAuthentication\ yes/g' /etc/ssh/sshd_config
+        - systemctl restart sshd.service
         - mkdir -p /etc/docker
         - cp -v /tmp/docker-daemon.json /etc/docker/daemon.json
         - systemctl daemon-reload
