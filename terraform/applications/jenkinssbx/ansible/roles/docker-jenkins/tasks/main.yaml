@@ -7,6 +7,17 @@
     msg: "{{ say_hello_result.stdout }}"
   ignore_errors: true
 
+- name: Check that you can talk to docker over tcp
+  ansible.builtin.uri:
+    url: http://{{ ip }}:2376/_ping
+    return_content: yes
+  register: check_docker_over_tcp_result
+
+- name: debug check_docker_over_tcp_result
+  ansible.builtin.debug:
+    msg: "{{ check_docker_over_tcp_result.stdout }}"
+  ignore_errors: true
+
 # copy the Dockerfile over to /home/ubuntu and force copy it over if it already exists
 - name: copy Dockerfile to /home/ubuntu
   ansible.builtin.copy:
