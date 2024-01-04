@@ -16,6 +16,15 @@
     msg: "{{ get_route_result.stdout }}"
   ignore_errors: true
 
+- name: try raw curl
+  ansible.builtin.shell: curl -v http://{{ ip }}:2376/_ping
+  register: try_raw_curl_result
+
+- name: debug try_raw_curl_result
+  ansible.builtin.debug:
+    msg: "{{ try_raw_curl_result.stdout }}"
+  ignore_errors: true
+
 - name: Check that you can talk to docker over tcp
   ansible.builtin.uri:
     url: "http://{{ ip }}:2376/_ping"
