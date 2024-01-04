@@ -1,0 +1,25 @@
+services:
+  jenkins:
+    image: jenkins/jenkins-ansible:latest
+    container_name: jenkins-ansible
+    environment:
+      SSHPASS: linux
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false -Djenkins.install.SetupWizard.adminInitialApiToken=\"{{ lookup('password', '/dev/null length=20 chars=ascii_letters') }}\" -Dhudson.model.DirectoryBrowserSupport.CSP=\"\""
+      JENKINS_ADMIN_PASSWORD: "{{ jenkins_admin_password }}"
+      JENKINS_DEV_PASSWORD: "{{ jenkins_dev_password }}"
+      JENKINS_PUBLIC_ENDPOINT: "{{ jenkins_public_endpoint }}"
+      JENKINS_ADMIN_EMAIL: "{{ jenkins_admin_email }}"
+      GITHUB_USERNAME: "{{ github_username }}"
+      GITHUB_ACCESS_TOKEN: "{{ github_token }}"
+      MINIO_ENDPOINT: "{{ minio_endpoint }}"
+      MINIO_ACCESS_KEY: "{{ minio_access_key }}"
+      MINIO_SECRET_KEY: "{{ minio_secret_key }}"
+      QE_ANSIBLE_URL: "{{ ansible_url }}"
+      QE_ANSIBLE_BRANCH: "{{ ansible_branch }}"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 80:8080
+      - 50000:50000

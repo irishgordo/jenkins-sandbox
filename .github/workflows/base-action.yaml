@@ -1,5 +1,7 @@
 name: base-actions-jenkins-sandbox
 run-name: Jenkins Sandbox
+env:
+  TF_VAR_runnertempknownhosts: "placeholder"
 on:
   push:
     branches:
@@ -8,7 +10,46 @@ on:
     branches:
       - sandbox
 jobs:
+  get-env-vars:
+    name: Get Environment vars
+    runs-on: self-hosted
+    outputs:
+      TF_VAR_runnertempknownhosts: ${{ runner.temp }}/temp_known_hosts
+    steps:
+      - run: echo "null"
   checkout-start:
+    environment: sandbox
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
+  list-stats:
+    environment: sandbox
+    needs: checkout-start
+    runs-on: self-hosted
+    steps:
+      - name: Make the script files executable
+        run: chmod +x ci-cd-scripts/show-env.sh
+      - name: Run show env
+        run: |
+          ./ci-cd-scripts/show-env.sh
+      - name: Build the known_hosts file the temp one
+        run: |
+          echo "" > ${{ runner.temp }}/temp_known_hosts && chmod 600 ${{ runner.temp }}/temp_known_hosts && ssh-keyscan -H 127.0.0.1 >> ${{ runner.temp }}/temp_known_hosts
+      - name: copy current github private runners kubeconfig for harvester cluster to this directory since we are going to use that to build are resources plus ansible
+        run: cp -v /home/ubuntu/sandbox-harvester-cluster-kubeconfig.yaml local.yaml
+  terraform:
+    environment: sandbox
+    defaults:
+      run:
+        working-directory: ./terraform/applications/jenkinssbx
+    needs: [checkout-start, list-stats, get-env-vars]
+    runs-on: self-hosted
+    steps:
+      - name: terraform init
+        run: TF_LOG=TRACE terraform init -var-file="env/local.tfvars"
+      - name: terraform destroy with auto approval of the vm and cloud init to reprovision
+        run: TF_LOG=TRACE terraform destroy -var-file="env/local.tfvars" -auto-approve -target harvester_virtualmachine.jenkinssbxvm-vm -target harvester_cloudinit_secret.cloud-config-jenkinssbxvm -target ansible_playbook.jenkinssbxvm-vm-ansible-playbook
+      - name: terraform plan
+        run: TF_LOG=TRACE terraform plan -var-file="env/local.tfvars" -var "runnertempknownhosts=${{ runner.temp }}/temp_known_hosts"
+      - name: terraform apply with auto aproval
+        run: TF_LOG=TRACE terraform apply -var-file="env/local.tfvars" -var "runnertempknownhosts=${{ runner.temp }}/temp_known_hosts" -auto-approve

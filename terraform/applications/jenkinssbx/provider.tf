@@ -6,7 +6,7 @@ terraform {
       version = "0.6.3"
     }
     kubernetes = {
-      source = "hashicorp/kubernetes"
+      source  = "hashicorp/kubernetes"
       version = "2.16.0"
     }
     # unifi = {
@@ -17,6 +17,24 @@ terraform {
       version = "1.1.0"
       source  = "ansible/ansible"
     }
+
+  }
+
+  # Current Work-Around Needed: https://github.com/FlexibleEngineCloud/terraform-provider-flexibleengine/issues/1074#issuecomment-1827861856
+  backend "s3" {
+    bucket = "jenkins-sbx"
+    region = "us-sbx-1"
+    encrypt = false
+    endpoints                   = { s3 = "http://192.168.12.22:9000" }
+    skip_requesting_account_id  = true
+    skip_s3_checksum            = true
+    skip_region_validation      = true
+    skip_credentials_validation = true
+    skip_metadata_api_check     = true
+    use_path_style = true
+    access_key = "jenkins-sbx-key"
+    secret_key = "jenkins-sbx-secret-key"
+    key = "terraform.tfstate"
   }
 }
 
@@ -35,12 +53,12 @@ terraform {
 # }
 
 locals {
-  module_path        = abspath(path.module)
+  module_path                = abspath(path.module)
   terraform_script_root_path = abspath("${path.module}/../..")
-  codebase_root_path = abspath("${path.module}/../../..")
+  codebase_root_path         = abspath("${path.module}/../../..")
 
   # Trim local.codebase_root_path and one additional slash from local.module_path
-  module_rel_path    = substr(local.module_path, length(local.terraform_script_root_path)+1, length(local.module_path))
+  module_rel_path = substr(local.module_path, length(local.terraform_script_root_path) + 1, length(local.module_path))
 }
 
 provider "harvester" {
@@ -51,3 +69,4 @@ provider "harvester" {
 provider "kubernetes" {
   config_path = abspath("${local.codebase_root_path}/local.yaml")
 }
+

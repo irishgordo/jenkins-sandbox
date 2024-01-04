@@ -1,6 +1,10 @@
 - hosts: jenkinssbxvm-box
-  become: yes
-  gather_facts: yes
+  become: true
+  become_user: root
+  become_flags: "-i "
+  gather_facts: true
   become_method: sudo
+  # environment:
+  #   http_proxy: http://192.168.13.176:8888
   roles:
     - docker-jenkins

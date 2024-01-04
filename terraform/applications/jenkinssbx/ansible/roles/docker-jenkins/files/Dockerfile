@@ -6,12 +6,12 @@ FROM jenkins/jenkins:lts-alpine-jdk17
 USER root
 RUN mkdir /jenkins_config
 RUN apk add --no-cache figlet python3 py3-pip sshpass
-RUN pip3 install pip --upgrade
-RUN pip3 install kubernetes
-RUN pip3 install ansible
-RUN pip3 install jmespath
-RUN pip3 install requests
-RUN pip3 install pyyaml
+RUN pip3 install pip --upgrade --break-system-packages
+RUN pip3 install kubernetes --break-system-packages
+RUN pip3 install ansible --break-system-packages
+RUN pip3 install jmespath --break-system-packages
+RUN pip3 install requests --break-system-packages
+RUN pip3 install pyyaml --break-system-packages
 RUN ansible-galaxy collection install community.general
 RUN ansible-galaxy collection install community.kubernetes
 RUN ansible-galaxy collection install community.docker
@@ -37,7 +37,7 @@ COPY *.groovy /jenkins_config/
 # Copy the SSH private key to be utilized by Ansible.
 COPY jenkins_ansible_key /jenkins_config/jenkins_ansible_key
 
-COPY vault.txt /var/jenkins_home/vault.txt
+# COPY vault.txt /var/jenkins_home/vault.txt
 
 USER root
 RUN chown -R jenkins /jenkins_config
