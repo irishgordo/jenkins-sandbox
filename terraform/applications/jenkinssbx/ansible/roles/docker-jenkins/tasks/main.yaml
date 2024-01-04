@@ -18,8 +18,10 @@
 
 - name: make sure docker service is started
   ansible.builtin.service:
-    name: docker
+    service: docker
     state: started
+  retries: 5
+  delay: 5
   register: docker_service_started_result
 
 - name: debug docker_service_started_result
