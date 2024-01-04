@@ -20,23 +20,14 @@
   ansible.builtin.service:
     service: docker
     state: started
-  retries: 5
-  delay: 5
+  retries: 10
+  delay: 10
   register: docker_service_started_result
 
 - name: debug docker_service_started_result
   ansible.builtin.debug:
     msg: "{{ docker_service_started_result.stdout }}"
   ignore_errors: true
-
-# - name: try raw curl
-#   ansible.builtin.shell: curl -v http://{{ ip }}:2376/_ping
-#   register: try_raw_curl_result
-
-# - name: debug try_raw_curl_result
-#   ansible.builtin.debug:
-#     msg: "{{ try_raw_curl_result.stdout }}"
-#   ignore_errors: true
 
 # try 10 times to see if docker is up and running
 - name: Check that you can talk to docker over tcp
@@ -145,23 +136,83 @@
 # https://peterbabic.dev/blog/tips-for-rootless-docker-on-arch-with-ansible/
 # docker rootless puts the sock in user space like, unix:///run/user/1000/docker.sock
 
-# - name: Create volume for 'jenkins_home'
-#   community.docker.docker_volume:
-#     name: jenkins_home
-#     debug: true
+- name: run build_docker_image.sh
+  ansible.builtin.shell: |
+    cd /home/ubuntu && ./build_docker_image.sh
+  register: build_docker_image_result
+
+- name: debug build_docker_image_result
+  ansible.builtin.debug:
+    msg: "{{ build_docker_image_result.stdout }}"
+  ignore_errors: true
+
+- name: build container image
+  community.docker.docker_image:
+    name: jenkins/jenkins-ansible:latest
+    build:
+      path: /home/ubuntu/Dockerfile
+    source: build
+    state: present
+    tls: false
+    debug: true
+    # add host to .profile for root and ubuntu
+    docker_host: "tcp://{{ ip }}:2376"
+  register: build_container_image_result
+
+- name: debug build_container_image_result
+  ansible.builtin.debug:
+    msg: "{{ build_container_image_result.stdout }}"
+  ignore_errors: true
+
+- name: Create volume for 'jenkins_home'
+  community.docker.docker_volume:
+    name: jenkins_home
+    debug: true
+    tls: false
+    docker_host: "tcp://{{ ip }}:2376"
     #docker_host: "unix:///run/user/1000/docker.sock"
     #docker_host: "tcp://{{ ip }}:2376"
     #use_ssh_client: true
+  register: create_volume_result
 
-# - name: create volume for jenkins_home
-#   ansible.builtin.shell: |
-#     /usr/bin/docker volume create jenkins_home
-#   register: create_volume_result
+- name: debug create_volume_result
+  ansible.builtin.debug:
+    msg: "{{ create_volume_result.stdout }}"
+  ignore_errors: true
 
-# - name: debug create_volume_result
-#   ansible.builtin.debug:
-#     msg: "{{ create_volume_result.stdout }}"
-#   ignore_errors: true
+- name: started Jenkins
+  community.docker.docker_container:
+    container_default_behavior: compatibility
+    debug: true
+    name: jenkins-ansible
+    state: started
+    restart: true
+    docker_host: "tcp://{{ ip }}:2376"
+    #docker_host: "unix:///run/user/1000/docker.sock"
+    #docker_host: "tcp://{{ ip }}:2376"
+    #use_ssh_client: true
+    image: jenkins/jenkins-ansible:latest
+    detach: true
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    ports:
+      - "80:8080"
+      - "50000:50000"
+    env:
+      SSHPASS: linux
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false -Djenkins.install.SetupWizard.adminInitialApiToken=\"{{ lookup('password', '/dev/null length=20 chars=ascii_letters') }}\" -Dhudson.model.DirectoryBrowserSupport.CSP=\"\""
+      JENKINS_ADMIN_PASSWORD: "{{ jenkins_admin_password }}"
+      JENKINS_DEV_PASSWORD: "{{ jenkins_dev_password }}"
+      JENKINS_PUBLIC_ENDPOINT: "{{ jenkins_public_endpoint }}"
+      JENKINS_ADMIN_EMAIL: "{{ jenkins_admin_email }}"
+      GITHUB_USERNAME: "{{ github_username }}"
+      GITHUB_ACCESS_TOKEN: "{{ github_token }}"
+      MINIO_ENDPOINT: "{{ minio_endpoint }}"
+      MINIO_ACCESS_KEY: "{{ minio_access_key }}"
+      MINIO_SECRET_KEY: "{{ minio_secret_key }}"
+      QE_ANSIBLE_URL: "{{ ansible_url }}"
+      QE_ANSIBLE_BRANCH: "{{ ansible_branch }}"
+
 
 # - name: template docker-compose.yaml to /home/ubuntu
 #   ansible.builtin.template:
@@ -216,45 +267,7 @@
 #       QE_ANSIBLE_BRANCH: "{{ ansible_branch }}"
 #   ignore_errors: true
 
-- name: run build_docker_image.sh
-  ansible.builtin.shell: |
-    cd /home/ubuntu && ./build_docker_image.sh
-  register: build_docker_image_result
 
-- name: debug build_docker_image_result
-  ansible.builtin.debug:
-    msg: "{{ build_docker_image_result.stdout }}"
-  ignore_errors: true
-
-# - name: change directory to /home/ubuntu
-#   ansible.builtin.command: cd /home/ubuntu
-#   register: change_directory_result
-
-# - name: debug change_directory_result
-#   ansible.builtin.debug:
-#     msg: "{{ change_directory_result.stdout }}"
-#   ignore_errors: true
-
-- name: build container image
-  community.docker.docker_image:
-    name: jenkins/jenkins-ansible:latest
-    build:
-      path: /home/ubuntu/Dockerfile
-    source: build
-    state: present
-    tls: false
-    debug: true
-    api_version: '1.43'
-    # add host to .profile for root and ubuntu
-    docker_host: "tcp://{{ ip }}:2376"
-    #docker_host: "unix://{{ ansible_env.XDG_RUNTIME_DIR }}/docker.sock"
-    #docker_host: "unix:///run/user/1000/docker.sock"
-  register: build_container_image_result
-
-- name: debug build_container_image_result
-  ansible.builtin.debug:
-    msg: "{{ build_container_image_result.stdout }}"
-  ignore_errors: true
 
     # docker_host: "unix:///var/run/docker.sock"
     # user: ubuntu:ubuntu
