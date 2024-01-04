@@ -142,7 +142,9 @@ resource "ansible_playbook" "jenkinssbxvm-vm-ansible-playbook" {
 
   # Inventory configuration
   # remove  UserKnownHostsFile=/dev/null - just on box, running ansible... configure it at gloval /etc/ssh/ssh_config level... maybe...
-  name   = "${var.JENKINSSBXVM_NAME} ansible_host=${harvester_virtualmachine.jenkinssbxvm-vm.network_interface[0].ip_address} ansible_sudo_pass=${var.JENKINSSBXVM_VM_PW} ansible_ssh_user=ubuntu ansible_ssh_password=${var.JENKINSSBXVM_VM_PW} ansible_ssh_common_args='-o StrictHostKeyChecking=no'"  # name of the host to use for inventory configuration
+  #name   = "${var.JENKINSSBXVM_NAME} ansible_host=${harvester_virtualmachine.jenkinssbxvm-vm.network_interface[0].ip_address} ansible_sudo_pass=${var.JENKINSSBXVM_VM_PW} ansible_ssh_user=ubuntu ansible_ssh_password=${var.JENKINSSBXVM_VM_PW} ansible_ssh_common_args='-o StrictHostKeyChecking=no'"  # name of the host to use for inventory configuration
+  name   = "${var.JENKINSSBXVM_NAME} ansible_host=${harvester_virtualmachine.jenkinssbxvm-vm.network_interface[0].ip_address} ansible_sudo_pass=${var.JENKINSSBXVM_VM_PW} ansible_ssh_user=ubuntu ansible_private_key_file='/home/ubuntu/.ssh/id_ed25519' ansible_ssh_common_args='-o StrictHostKeyChecking=no'"  # name of the host to use for inventory configuration
+
 
   check_mode = false
   diff_mode  = false
